@@ -7,12 +7,20 @@ static long num_steps = 100000;
 double step;
 
 int
+get_num_threads_from_env ()
+{
+	return atoi (getenv("OMP_NUM_THREADS"));
+}
+
+int
 main ()
 {
 	double pi, sum=0.0;
-	double sumArray[2];
+	double sumArray[get_num_threads_from_env ()];
+	double start, end;
 	int nthreads;
 
+	start = omp_get_wtime();
 	step = 1.0/static_cast<double>(num_steps);
 
 	#pragma omp parallel
@@ -34,6 +42,9 @@ main ()
 	
 	for (int i = 0; i < nthreads; i++)
 		pi += sumArray[i] * step;
+	
+	end = omp_get_wtime();
 
 	cout << "Result " << pi << endl;
+	cout << "Elapsed time " << end - start << endl;
 }
