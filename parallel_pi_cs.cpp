@@ -16,7 +16,6 @@ int
 main ()
 {
 	double pi;
-	double sumArray[get_num_threads_from_env ()];
 	double start, end;
 	int nthreads;
 
@@ -27,21 +26,21 @@ main ()
 	{
 		int id = omp_get_thread_num ();
 		int num = omp_get_num_threads ();
-		double x;
+		double x, sum = 0.0;
 		
-		sumArray[id] = 0;
 		if (id == 0)
 			nthreads = num;
 
 		for (int i = id; i < num_steps; i+=num)
 		{
 			x = (i+0.5)*step;
-			sumArray[id] += 4.0/(1.0+x*x);
+			sum += 4.0/(1.0+x*x);
 		}
+
+		#pragma omp critical
+		pi += sum *step;
 	}
 	
-	for (int i = 0; i < nthreads; i++)
-		pi += sumArray[i] * step;
 	
 	end = omp_get_wtime();
 
