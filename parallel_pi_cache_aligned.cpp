@@ -3,7 +3,7 @@
 
 using namespace std;
 
-static long num_steps = 100000;
+static long num_steps = 1000000000;
 const int Pad=8; // assume L1 cache line is 64 bytes
 double step;
 
